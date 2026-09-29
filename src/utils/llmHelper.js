@@ -5,11 +5,8 @@ import Groq from 'groq-sdk';
  * Using Groq API for AI-powered categorization
  */
 
-// Initialize Groq client
-const groq = new Groq({
-  apiKey: import.meta.env.VITE_GROQ_API_KEY,
-  dangerouslyAllowBrowser: true // Required for browser-based calls (not recommended for production!)
-});
+// Initialize only when analysis is requested so missing credentials cannot prevent rendering.
+let groq;
 
 /**
  * Categorize a customer support message using Groq AI
@@ -19,6 +16,14 @@ const groq = new Groq({
  */
 export async function categorizeMessage(message) {
   try {
+    const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+    if (!apiKey?.trim()) {
+      return getMockCategorization(message);
+    }
+    groq ??= new Groq({
+      apiKey,
+      dangerouslyAllowBrowser: true // Local development only.
+    });
     const response = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [

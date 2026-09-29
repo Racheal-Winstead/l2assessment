@@ -72,6 +72,35 @@ Support teams waste time manually reading and triaging customer messages. This t
 
 ## Example Test Messages
 
+### Testing urgency scoring locally
+
+Run `npm test` for the urgency regression checks and `npm run build` to verify
+the production build. With `npm run dev` running, open `/analyze`, submit each
+message separately, and compare the urgency result:
+
+| Message | Expected urgency |
+| --- | --- |
+| Server down now | High |
+| Please help, our production server is down. Thank you! | High |
+| I cannot log in to my account | High |
+| The export is failing and my deadline is within an hour | High |
+| I was charged twice for my subscription | Medium |
+| The report is slow to load | Medium |
+| Thank you! Your team has been incredibly helpful! | Low |
+| Could you add an export to CSV feature? | Low |
+| What happens if the server is down? | Low |
+
+Urgency uses local rules and does not require a Groq key. Outages, blocked core
+tasks, and data/security incidents take priority. Other recognized problems are
+Medium, escalating to High for time sensitivity or widespread impact. Questions,
+suggestions, and feedback default to Low. Capitalization, punctuation, message
+length, and the current day/time do not affect priority. These rules cover common
+English wording; ambiguous or unrecognized reports still need human review.
+
+Existing History records keep their saved urgency. Analyze a message again to
+test the new rules. The `expectedIssues` in `sample-messages.json` describe the
+original implementation's defects; some urgency defects are now addressed.
+
 Try analyzing these messages to see how the triage system works:
 
 ### Example 1: Production Issue
